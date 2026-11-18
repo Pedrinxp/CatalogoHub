@@ -55,12 +55,9 @@ import com.example.catalogohub.ui.theme.VerdeEscuro
 private val FundoDegrade = Brush.horizontalGradient(listOf(VerdeEscuro, Turquesa))
 private val FormaCabecalho = RoundedCornerShape(bottomStart = 28.dp, bottomEnd = 28.dp)
 
-/** Cores padrão dos cards do app. */
 @Composable
 fun coresCartao(): CardColors =
     CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
-
-/** Cabeçalho com degradê verde/turquesa e os 4 cards de resumo. */
 @Composable
 fun CabecalhoResumo(resumo: ResumoUi, modifier: Modifier = Modifier) {
     Column(
@@ -119,8 +116,6 @@ private fun CardResumo(rotulo: String, valor: String, modifier: Modifier = Modif
         }
     }
 }
-
-/** Cabeçalho simples (usado na tela de cadastro/edição). */
 @Composable
 fun CabecalhoSimples(titulo: String, onVoltar: () -> Unit) {
     Row(
@@ -143,8 +138,6 @@ fun CabecalhoSimples(titulo: String, onVoltar: () -> Unit) {
         )
     }
 }
-
-/** Card de seção (título + conteúdo), usado nos gráficos e listas do Dashboard. */
 @Composable
 fun CartaoSecao(
     titulo: String,
@@ -168,8 +161,6 @@ fun CartaoSecao(
         }
     }
 }
-
-/** Foto do produto; se não houver foto, mostra a inicial do nome. */
 @Composable
 fun FotoProduto(
     nome: String,
@@ -205,8 +196,6 @@ fun FotoProduto(
         }
     }
 }
-
-/** "Logo" redondo do marketplace (círculo colorido com a inicial). */
 @Composable
 fun MarcaCanal(canal: Marketplace, modifier: Modifier = Modifier, tamanho: Dp = 32.dp) {
     Box(
@@ -225,8 +214,6 @@ fun MarcaCanal(canal: Marketplace, modifier: Modifier = Modifier, tamanho: Dp = 
         )
     }
 }
-
-/** Chip colorido do marketplace. Se "onClick" for informado, vira um botão de seleção. */
 @Composable
 fun CanalChip(
     canal: Marketplace,
@@ -256,8 +243,6 @@ fun CanalChip(
         )
     }
 }
-
-/** Selo de estoque: verde normal, vermelho com alerta quando for 5 unidades ou menos. */
 @Composable
 fun EstoqueBadge(estoque: Int, modifier: Modifier = Modifier) {
     val baixo = estoque <= LIMITE_ESTOQUE_BAIXO
@@ -300,8 +285,6 @@ fun EstoqueBadge(estoque: Int, modifier: Modifier = Modifier) {
         }
     }
 }
-
-/** Estado vazio amigável. */
 @Composable
 fun EstadoVazio(
     icone: ImageVector,
