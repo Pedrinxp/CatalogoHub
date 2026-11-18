@@ -12,7 +12,6 @@ interface ProdutoDao {
     @Query("SELECT * FROM produtos ORDER BY nome COLLATE NOCASE ASC")
     fun observarTodos(): Flow<List<ProdutoEntity>>
 
-    /** Lista única (sem observar), usada para gerar pedidos de exemplo. */
     @Query("SELECT * FROM produtos")
     suspend fun listar(): List<ProdutoEntity>
 
@@ -64,7 +63,6 @@ interface PedidoDao {
     @Query("SELECT * FROM pedidos WHERE id = :id")
     suspend fun buscarPorId(id: Long): PedidoEntity?
 
-    /** Pedidos de um status, do mais antigo para o mais novo (ordem natural de faturamento). */
     @Query("SELECT * FROM pedidos WHERE status = :status ORDER BY data ASC, id ASC")
     suspend fun buscarPorStatus(status: String): List<PedidoEntity>
 
