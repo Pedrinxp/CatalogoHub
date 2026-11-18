@@ -46,11 +46,6 @@ import com.example.catalogohub.data.ProdutoEntity
 import com.example.catalogohub.model.Marketplace
 import com.example.catalogohub.model.comoMoeda
 import com.example.catalogohub.model.paraMarketplaces
-
-/**
- * Aba "Vendas": simula uma venda em um canal. O estoque é baixado em todos os canais
- * e um pedido "Aguardando NF" é criado (a nota sai na aba Gerar NF).
- */
 @Composable
 fun VendasScreen(
     produtos: List<ProdutoEntity>,
