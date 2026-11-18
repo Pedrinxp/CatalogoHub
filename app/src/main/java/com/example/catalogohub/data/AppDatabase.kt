@@ -4,12 +4,6 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-
-/**
- * Banco de dados local (Room).
- * Versão 2: adicionou a tabela de pedidos. Como é app de teste, o banco antigo é recriado
- * (desinstale o app do emulador antes de rodar esta versão).
- */
 @Database(
     entities = [
         ProdutoEntity::class,
@@ -38,7 +32,6 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "catalogohub.db"
                 )
-                    // Versão atual (não depreciada) do fallback destrutivo
                     .fallbackToDestructiveMigration(dropAllTables = true)
                     .build()
                     .also { instancia = it }
