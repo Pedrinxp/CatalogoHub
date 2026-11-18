@@ -53,11 +53,6 @@ import com.example.catalogohub.data.ProdutoEntity
 import com.example.catalogohub.model.Marketplace
 import com.example.catalogohub.model.paraMarketplaces
 import com.example.catalogohub.model.paraTexto
-
-/**
- * Tela de cadastro (produto == null) e de edição (produto != null).
- * Na edição, SKU, estoque e canais ficam bloqueados: só nome, preço, descrição e foto mudam.
- */
 @Composable
 fun ProdutoFormScreen(
     produto: ProdutoEntity?,
@@ -103,7 +98,6 @@ fun ProdutoFormScreen(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
-        // ---------- Foto ----------
         Row(verticalAlignment = Alignment.CenterVertically) {
             val tamanhoFoto = Modifier.size(112.dp)
             if (fotoUri != null) {
@@ -142,8 +136,6 @@ fun ProdutoFormScreen(
                 }
             }
         }
-
-        // ---------- Campos ----------
         OutlinedTextField(
             value = nome,
             onValueChange = { nome = it },
@@ -194,8 +186,6 @@ fun ProdutoFormScreen(
             minLines = 3,
             shape = RoundedCornerShape(16.dp)
         )
-
-        // ---------- IA ----------
         FilledTonalButton(
             onClick = { onGerarIa(nome) },
             enabled = nome.isNotBlank() && !ia.gerando,
@@ -249,8 +239,6 @@ fun ProdutoFormScreen(
                 }
             }
         }
-
-        // ---------- Canais ----------
         Text(
             if (editando) "Canais de venda (bloqueado na edição)" else "Publicar nos canais",
             style = MaterialTheme.typography.titleMedium,
@@ -286,8 +274,6 @@ fun ProdutoFormScreen(
                 }
             }
         }
-
-        // ---------- Salvar ----------
         Button(
             onClick = {
                 if (produto != null) {
