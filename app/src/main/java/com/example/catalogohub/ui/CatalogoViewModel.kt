@@ -33,46 +33,37 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-/** Pedido + foto do produto (para mostrar na aba Gerar NF). */
 data class PedidoItemUi(
     val pedido: PedidoEntity,
     val foto: String?
 )
 
-/** Estado completo das telas. */
 data class CatalogoUiState(
-    val produtos: List<ProdutoEntity> = emptyList(),       // já filtrados pela busca
-    val todosProdutos: List<ProdutoEntity> = emptyList(),  // sem filtro
+    val produtos: List<ProdutoEntity> = emptyList(),      
+    val todosProdutos: List<ProdutoEntity> = emptyList(), 
     val busca: String = "",
     val resumo: ResumoUi = ResumoUi(),
     val notas: List<NotaFiscalEntity> = emptyList(),
     val logs: List<LogSyncEntity> = emptyList(),
-    val pendentes: List<PedidoItemUi> = emptyList(),       // pedidos AGUARDANDO_NF
-    val faturados: List<PedidoItemUi> = emptyList()        // pedidos FATURADO
+    val pendentes: List<PedidoItemUi> = emptyList(),       
+    val faturados: List<PedidoItemUi> = emptyList()     
 )
 
-/** Estado do botão "Gerar descrição com IA". */
 data class IaState(
     val gerando: Boolean = false,
     val sugestao: DescricaoIA? = null
 )
 
-/** Converte "59,90" ou "59.90" em Double. */
 private fun String.comoPreco(): Double? = trim().replace(',', '.').toDoubleOrNull()
 
 class CatalogoViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repositorio = CatalogoRepository(AppDatabase.getInstance(application))
-
-    // Para usar uma API real, troque por GeradorDescricaoRemoto()
     private val gerador: GeradorDescricao = GeradorDescricaoLocal()
-
     private val _busca = MutableStateFlow("")
     private val _mes = MutableStateFlow(MesRef.atual())
     private val _ia = MutableStateFlow(IaState())
     val ia: StateFlow<IaState> = _ia.asStateFlow()
-
-    // Mensagens pontuais para o Snackbar
     private val _mensagens = Channel<String>(Channel.BUFFERED)
     val mensagens = _mensagens.receiveAsFlow()
 
@@ -111,7 +102,6 @@ class CatalogoViewModel(application: Application) : AndroidViewModel(application
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), CatalogoUiState())
 
-    /** Números do dashboard: mudam quando chegam pedidos novos ou quando o mês é trocado. */
     val dashboard: StateFlow<DashboardUi> = combine(
         repositorio.pedidos,
         _mes
@@ -130,8 +120,6 @@ class CatalogoViewModel(application: Application) : AndroidViewModel(application
     fun onBuscaChange(texto: String) {
         _busca.value = texto
     }
-
-    /** Dashboard: -1 = mês anterior, +1 = próximo mês. */
     fun mudarMes(delta: Int) {
         _mes.value = _mes.value.deslocar(delta)
     }
@@ -220,8 +208,6 @@ class CatalogoViewModel(application: Application) : AndroidViewModel(application
             avisar("Produto \"${produto.nome}\" excluído.")
         }
     }
-
-    /** Venda: baixa o estoque e cria um pedido aguardando NF. */
     fun vender(produtoId: Long, canal: Marketplace, quantidade: Int) {
         viewModelScope.launch {
             when (val resultado = repositorio.vender(produtoId, canal, quantidade)) {
@@ -233,8 +219,6 @@ class CatalogoViewModel(application: Application) : AndroidViewModel(application
             }
         }
     }
-
-    /** Gera a NF de um pedido pendente. */
     fun gerarNf(pedidoId: Long) {
         viewModelScope.launch {
             when (val resultado = repositorio.gerarNf(pedidoId)) {
@@ -243,8 +227,6 @@ class CatalogoViewModel(application: Application) : AndroidViewModel(application
             }
         }
     }
-
-    /** Gera a NF de todos os pedidos pendentes. */
     fun gerarTodasNfs() {
         viewModelScope.launch {
             val quantidade = repositorio.gerarTodasNfs()
@@ -255,8 +237,6 @@ class CatalogoViewModel(application: Application) : AndroidViewModel(application
             }
         }
     }
-
-    /** Cria pedidos de exemplo no mês atual para preencher os gráficos. */
     fun gerarPedidosExemplo() {
         viewModelScope.launch {
             val quantidade = repositorio.gerarPedidosExemplo()
