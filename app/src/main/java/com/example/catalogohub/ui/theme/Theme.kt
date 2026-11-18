@@ -52,8 +52,6 @@ private val EsquemaEscuro = darkColorScheme(
     surfaceContainerHigh = Color(0xFF252B27),
     surfaceContainerHighest = Color(0xFF303632)
 )
-
-/** Tema do app: segue o modo claro/escuro do celular. */
 @Composable
 fun CatalogoHubTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
