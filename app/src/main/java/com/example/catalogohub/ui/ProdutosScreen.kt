@@ -59,7 +59,6 @@ import com.example.catalogohub.model.LIMITE_ESTOQUE_BAIXO
 import com.example.catalogohub.model.comoMoeda
 import com.example.catalogohub.model.paraMarketplaces
 
-/** Aba "Produtos": busca, lista de cards, editar, excluir e trocar foto. */
 @Composable
 fun ProdutosScreen(
     produtos: List<ProdutoEntity>,
@@ -73,8 +72,6 @@ fun ProdutosScreen(
 ) {
     var paraExcluir by remember { mutableStateOf<ProdutoEntity?>(null) }
     var produtoDaFotoId by rememberSaveable { mutableStateOf<Long?>(null) }
-
-    // Seletor de fotos da galeria (não precisa de permissão)
     val seletorDeFoto = rememberLauncherForActivityResult(
         ActivityResultContracts.PickVisualMedia()
     ) { uri ->
@@ -122,8 +119,6 @@ fun ProdutosScreen(
             }
         }
     }
-
-    // Diálogo de confirmação ao excluir
     paraExcluir?.let { produto ->
         AlertDialog(
             onDismissRequest = { paraExcluir = null },
@@ -191,7 +186,6 @@ private fun ProdutoCard(
     ) {
         Column(Modifier.padding(14.dp)) {
             Row(verticalAlignment = Alignment.Top) {
-                // Foto (toque para trocar pela galeria)
                 Box {
                     FotoProduto(
                         nome = produto.nome,
@@ -245,8 +239,6 @@ private fun ProdutoCard(
             }
 
             Spacer(Modifier.height(12.dp))
-
-            // Chips coloridos dos canais onde o produto está publicado
             Row(
                 modifier = Modifier.horizontalScroll(rememberScrollState()),
                 horizontalArrangement = Arrangement.spacedBy(6.dp)
