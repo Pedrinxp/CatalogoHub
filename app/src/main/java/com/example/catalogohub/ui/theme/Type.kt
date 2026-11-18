@@ -6,7 +6,6 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
-// Fontes legíveis, com tamanhos um pouco maiores para uso no celular
 val Typography = Typography(
     headlineMedium = TextStyle(
         fontFamily = FontFamily.Default,
