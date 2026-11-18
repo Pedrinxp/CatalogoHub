@@ -33,7 +33,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
 
-/** As 5 abas, na ordem da barra de navegação. */
 private enum class Aba(val titulo: String, val icone: ImageVector) {
     DASHBOARD("Dashboard", Icons.Default.Dashboard),
     PRODUTOS("Produtos", Icons.Default.Inventory2),
@@ -41,8 +40,6 @@ private enum class Aba(val titulo: String, val icone: ImageVector) {
     GERAR_NF("Gerar NF", Icons.Default.RequestQuote),
     NOTAS("Notas/Log", Icons.Default.Receipt)
 }
-
-/** Raiz do app: cabeçalho, navegação inferior, FAB, Snackbar e as telas. */
 @Composable
 fun CatalogoApp(viewModel: CatalogoViewModel = viewModel()) {
     val estado by viewModel.uiState.collectAsStateWithLifecycle()
@@ -56,15 +53,12 @@ fun CatalogoApp(viewModel: CatalogoViewModel = viewModel()) {
 
     val produtoEditando = estado.todosProdutos.firstOrNull { it.id == editandoId }
 
-    // Mostra as mensagens do ViewModel em Snackbar (a mais nova substitui a anterior)
     LaunchedEffect(Unit) {
         viewModel.mensagens.collect { mensagem ->
             snackbarHostState.currentSnackbarData?.dismiss()
             launch { snackbarHostState.showSnackbar(mensagem) }
         }
     }
-
-    // Botão voltar do celular fecha o formulário
     BackHandler(enabled = formAberto) { formAberto = false }
 
     Scaffold(
@@ -100,7 +94,6 @@ fun CatalogoApp(viewModel: CatalogoViewModel = viewModel()) {
             }
         },
         floatingActionButton = {
-            // O FAB "Novo produto" aparece só na aba Produtos
             if (!formAberto && abaAtual == Aba.PRODUTOS.ordinal) {
                 ExtendedFloatingActionButton(
                     onClick = {
