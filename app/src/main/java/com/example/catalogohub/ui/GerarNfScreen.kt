@@ -42,7 +42,6 @@ import com.example.catalogohub.model.comoMoeda
 import com.example.catalogohub.model.comoNumeroNota
 import com.example.catalogohub.model.comoNumeroPedido
 
-/** Aba "Gerar NF": pedidos aguardando nota (pendentes) e pedidos já faturados. */
 @Composable
 fun GerarNfScreen(
     pendentes: List<PedidoItemUi>,
@@ -165,8 +164,6 @@ private fun ListaFaturados(faturados: List<PedidoItemUi>) {
         }
     }
 }
-
-/** Card de pedido. Com "onGerarNf" mostra o botão grande; sem ele, mostra o número da NF. */
 @Composable
 private fun PedidoCard(item: PedidoItemUi, onGerarNf: (() -> Unit)?) {
     val pedido = item.pedido
