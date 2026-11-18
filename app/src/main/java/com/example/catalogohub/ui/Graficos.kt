@@ -32,32 +32,22 @@ import com.example.catalogohub.model.Marketplace
 import kotlin.math.max
 import kotlin.math.min
 
-/** Uma barra do gráfico de barras. */
 data class BarraDado(
     val rotulo: String,
     val valor: Double,
     val cor: Color,
     val textoValor: String
 )
-
-/** Uma fatia da rosca. */
 data class FatiaDado(
     val rotulo: String,
     val valor: Int,
     val cor: Color
 )
-
-/**
- * Cor do canal para usar em gráficos: no tema escuro, o preto do TikTok Shop
- * sumiria no fundo, então ele vira um cinza visível.
- */
 @Composable
 fun corNoGrafico(canal: Marketplace): Color {
     val escuro = MaterialTheme.colorScheme.surface.luminance() < 0.5f
     return if (escuro && canal.cor.luminance() < 0.1f) Color(0xFF9E9E9E) else canal.cor
 }
-
-/** Gráfico de barras verticais com o valor em cima de cada barra e o rótulo embaixo. */
 @Composable
 fun GraficoBarras(
     dados: List<BarraDado>,
@@ -84,8 +74,6 @@ fun GraficoBarras(
             val slot = size.width / dados.size
             val larguraBarra = slot * 0.6f
             val raio = CornerRadius(6.dp.toPx())
-
-            // Linha de base
             drawLine(
                 color = corBase,
                 start = Offset(0f, size.height),
@@ -117,8 +105,6 @@ fun GraficoBarras(
                         style = Stroke(width = 1.dp.toPx())
                     )
                 }
-
-                // Valor em R$ em cima da barra (centralizado e sem sair da tela)
                 val texto = medidor.measure(d.textoValor, estiloValor)
                 val tx = (x + larguraBarra / 2f - texto.size.width / 2f)
                     .coerceIn(0f, max(0f, size.width - texto.size.width))
@@ -126,8 +112,6 @@ fun GraficoBarras(
                 drawText(texto, topLeft = Offset(tx, ty))
             }
         }
-
-        // Rótulos (um por barra, mesma largura de cada "fatia" do Canvas)
         Row(Modifier.fillMaxWidth()) {
             dados.forEach {
                 Text(
@@ -144,8 +128,6 @@ fun GraficoBarras(
         }
     }
 }
-
-/** Gráfico de rosca (donut) com um texto no centro. */
 @Composable
 fun GraficoRosca(
     fatias: List<FatiaDado>,
@@ -207,8 +189,6 @@ fun GraficoRosca(
         }
     }
 }
-
-/** Colunas do faturamento dia a dia (uma coluna por dia do mês). */
 @Composable
 fun GraficoColunasDias(
     valores: List<Double>,
@@ -238,8 +218,6 @@ fun GraficoColunasDias(
         val slot = size.width / n
         val larguraColuna = slot * 0.7f
         val raio = CornerRadius(3.dp.toPx())
-
-        // Linhas de grade (base, metade e topo)
         listOf(0f, 0.5f, 1f).forEach { fracao ->
             val y = areaAltura * (1f - fracao)
             drawLine(
@@ -261,7 +239,6 @@ fun GraficoColunasDias(
                     cornerRadius = raio
                 )
             } else {
-                // Dia sem vendas: só um tracinho
                 drawRoundRect(
                     color = corVazio,
                     topLeft = Offset(x, areaAltura - 2.dp.toPx()),
@@ -269,8 +246,6 @@ fun GraficoColunasDias(
                     cornerRadius = raio
                 )
             }
-
-            // Números dos dias: 1, 5, 10, 15... e o último (sem sobrepor)
             val dia = i + 1
             if (dia == 1 || dia == n || (dia % 5 == 0 && n - dia >= 3)) {
                 val texto = medidor.measure(dia.toString(), estiloDia)
