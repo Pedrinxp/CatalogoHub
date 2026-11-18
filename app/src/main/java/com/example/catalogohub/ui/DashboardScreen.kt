@@ -42,11 +42,6 @@ import com.example.catalogohub.model.comoMoeda
 import com.example.catalogohub.model.comoMoedaCurta
 import com.example.catalogohub.model.comoNomeMes
 import com.example.catalogohub.model.comoPercentual
-
-/**
- * Aba "Dashboard": indicadores e gráficos do mês escolhido.
- * Todos os números já chegam agregados do ViewModel.
- */
 @Composable
 fun DashboardScreen(
     dashboard: DashboardUi,
@@ -84,7 +79,6 @@ fun DashboardScreen(
                 }
             }
         } else {
-            // Indicadores
             item {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -97,8 +91,6 @@ fun DashboardScreen(
                     }
                 }
             }
-
-            // Faturamento por canal (barras)
             item {
                 CartaoSecao("Faturamento por canal") {
                     GraficoBarras(
@@ -113,8 +105,6 @@ fun DashboardScreen(
                     )
                 }
             }
-
-            // Pedidos por canal (rosca + legenda)
             item {
                 CartaoSecao("Pedidos por canal") {
                     Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
@@ -155,8 +145,6 @@ fun DashboardScreen(
                     }
                 }
             }
-
-            // Faturamento dia a dia
             item {
                 CartaoSecao("Faturamento dia a dia") {
                     Text(
@@ -182,8 +170,6 @@ fun DashboardScreen(
                     GraficoColunasDias(valores = dashboard.porDia.map { it.faturamento })
                 }
             }
-
-            // Lista dos canais com valor e percentual
             item {
                 CartaoSecao("Canais: valor e participação") {
                     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -243,8 +229,6 @@ fun DashboardScreen(
         }
     }
 }
-
-/** Seletor de mês: botão anterior, nome do mês ("Novembro/2026") e botão próximo. */
 @Composable
 private fun SeletorMes(nomeMes: String, onAnterior: () -> Unit, onProximo: () -> Unit) {
     Card(
@@ -273,8 +257,6 @@ private fun SeletorMes(nomeMes: String, onAnterior: () -> Unit, onProximo: () ->
         }
     }
 }
-
-/** Card de indicador (rótulo pequeno + valor grande). */
 @Composable
 private fun IndicadorCard(rotulo: String, valor: String, modifier: Modifier = Modifier) {
     Card(
