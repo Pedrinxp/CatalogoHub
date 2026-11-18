@@ -2,12 +2,6 @@ package com.example.catalogohub.data
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-
-/**
- * Produto do catálogo central.
- * - foto: "res:nome_do_drawable" (imagem de exemplo) ou caminho de arquivo copiado da galeria.
- * - canais: nomes dos marketplaces separados por vírgula (ex.: "SHOPEE,MAGALU").
- */
 @Entity(tableName = "produtos")
 data class ProdutoEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
@@ -19,8 +13,6 @@ data class ProdutoEntity(
     val descricao: String = "",
     val canais: String = ""
 )
-
-/** Nota fiscal simulada, emitida na aba "Gerar NF" a partir de um pedido. */
 @Entity(tableName = "notas_fiscais")
 data class NotaFiscalEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
@@ -32,8 +24,6 @@ data class NotaFiscalEntity(
     val canal: String,
     val data: Long
 )
-
-/** Registro do histórico de sincronização. "tipo" guarda o nome do enum TipoLog. */
 @Entity(tableName = "logs_sync")
 data class LogSyncEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
@@ -41,13 +31,6 @@ data class LogSyncEntity(
     val tipo: String,
     val data: Long
 )
-
-/**
- * Pedido gerado por uma venda em um canal.
- * - canal: nome do enum Marketplace.
- * - status: nome do enum StatusPedido (AGUARDANDO_NF ou FATURADO).
- * - numeroNota: preenchido quando a NF é gerada.
- */
 @Entity(tableName = "pedidos")
 data class PedidoEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
