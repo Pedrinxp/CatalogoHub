@@ -20,18 +20,12 @@ import kotlinx.coroutines.flow.Flow
 import java.util.Calendar
 import kotlin.random.Random
 
-/** Pedido de exemplo ainda não gravado (uso interno do gerador de dados de teste). */
 private data class AmostraPedido(
     val produto: ProdutoEntity,
     val canal: Marketplace,
     val quantidade: Int,
     val data: Long
 )
-
-/**
- * Concentra TODA a regra de negócio de dados:
- * cadastro, estoque único sincronizado, pedidos, nota fiscal, log e agregação do dashboard.
- */
 class CatalogoRepository(private val db: AppDatabase) {
 
     private val produtoDao = db.produtoDao()
@@ -51,8 +45,6 @@ class CatalogoRepository(private val db: AppDatabase) {
     ) {
         logDao.inserir(LogSyncEntity(mensagem = mensagem, tipo = tipo.name, data = data))
     }
-
-    /** Cria produtos de exemplo na primeira abertura do app. */
     suspend fun popularExemplosSeVazio() {
         if (produtoDao.contar() > 0) return
 
@@ -85,8 +77,6 @@ class CatalogoRepository(private val db: AppDatabase) {
         exemplos.forEach { produtoDao.inserir(it) }
         registrarLog("Catálogo inicial carregado com ${exemplos.size} produtos de exemplo.", TipoLog.INFO)
     }
-
-    /** Cadastra um produto e "publica" nos canais escolhidos. Devolve mensagem de erro ou null. */
     suspend fun criarProduto(
         nome: String,
         sku: String,
@@ -109,8 +99,6 @@ class CatalogoRepository(private val db: AppDatabase) {
         }
         return null
     }
-
-    /** Edita nome, preço, descrição e (opcionalmente) a foto. Devolve mensagem de erro ou null. */
     suspend fun editarProduto(
         id: Long,
         nome: String,
@@ -141,13 +129,6 @@ class CatalogoRepository(private val db: AppDatabase) {
         ArmazenamentoImagens.apagar(produto.foto)
         registrarLog("Produto \"${produto.nome}\" removido de todos os canais.", TipoLog.SYNC)
     }
-
-    /**
-     * Venda em um canal: baixa o estoque ÚNICO (vale para todos os canais),
-     * cria um PEDIDO "Aguardando NF" (com o canal de origem) e registra o log.
-     * A nota fiscal NÃO é emitida aqui: isso é feito na aba "Gerar NF".
-     * Tudo em uma única transação.
-     */
     suspend fun vender(produtoId: Long, canal: Marketplace, quantidade: Int): ResultadoVenda =
         db.withTransaction {
             val produto = produtoDao.buscarPorId(produtoId)
@@ -201,8 +182,6 @@ class CatalogoRepository(private val db: AppDatabase) {
 
             ResultadoVenda.Sucesso(numeroPedido)
         }
-
-    /** Emite a NF de um pedido e o marca como FATURADO. Deve ser chamada dentro de uma transação. */
     private suspend fun emitirNota(pedido: PedidoEntity, data: Long): Int {
         val numero = (notaDao.maiorNumero() ?: 0) + 1
         notaDao.inserir(
@@ -225,8 +204,6 @@ class CatalogoRepository(private val db: AppDatabase) {
         )
         return numero
     }
-
-    /** Gera a NF de UM pedido pendente (em transação). */
     suspend fun gerarNf(pedidoId: Long): ResultadoNf =
         db.withTransaction {
             val pedido = pedidoDao.buscarPorId(pedidoId)
@@ -236,8 +213,6 @@ class CatalogoRepository(private val db: AppDatabase) {
             }
             ResultadoNf.Sucesso(emitirNota(pedido, System.currentTimeMillis()))
         }
-
-    /** Gera a NF de TODOS os pedidos pendentes, em uma única transação. Devolve quantas foram geradas. */
     suspend fun gerarTodasNfs(): Int =
         db.withTransaction {
             val pendentes = pedidoDao.buscarPorStatus(StatusPedido.AGUARDANDO_NF.name)
@@ -245,12 +220,6 @@ class CatalogoRepository(private val db: AppDatabase) {
             pendentes.forEach { emitirNota(it, agora) }
             pendentes.size
         }
-
-    /**
-     * Cria pedidos de exemplo com datas espalhadas pelo mês atual (do dia 1 até hoje).
-     * Não mexe no estoque. Cerca de 1/3 já nasce faturado, com a nota correspondente.
-     * Devolve quantos pedidos foram criados.
-     */
     suspend fun gerarPedidosExemplo(): Int =
         db.withTransaction {
             val disponiveis = produtoDao.listar().filter { it.canais.paraMarketplaces().isNotEmpty() }
@@ -293,11 +262,6 @@ class CatalogoRepository(private val db: AppDatabase) {
             registrarLog("${amostras.size} pedidos de exemplo gerados (estoque não alterado).", TipoLog.INFO)
             amostras.size
         }
-
-    /**
-     * Agrega os pedidos do mês escolhido (qualquer status) para o dashboard.
-     * Função pura: recebe a lista e devolve os números prontos para a tela.
-     */
     fun calcularDashboard(pedidos: List<PedidoEntity>, mes: MesRef): DashboardUi {
         val cal = Calendar.getInstance()
 
@@ -308,7 +272,6 @@ class CatalogoRepository(private val db: AppDatabase) {
 
         val faturamento = doMes.sumOf { it.total }
 
-        // Faturamento por dia
         val referencia = Calendar.getInstance().apply {
             clear()
             set(mes.ano, mes.mes - 1, 1)
@@ -321,8 +284,6 @@ class CatalogoRepository(private val db: AppDatabase) {
         }
         val porDia = (1..diasNoMes).map { TotalDia(it, somaPorDia[it]) }
         val melhorDia = porDia.maxByOrNull { it.faturamento }?.takeIf { it.faturamento > 0.0 }
-
-        // Totais por canal (todos os canais aparecem, mesmo com zero)
         val porCanal = Marketplace.entries.map { canal ->
             val doCanal = doMes.filter { it.canal == canal.name }
             val valor = doCanal.sumOf { it.total }
