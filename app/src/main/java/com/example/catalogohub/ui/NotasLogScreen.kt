@@ -48,8 +48,6 @@ import com.example.catalogohub.model.TipoLog
 import com.example.catalogohub.model.comoDataHora
 import com.example.catalogohub.model.comoMoeda
 import com.example.catalogohub.model.comoNumeroNota
-
-/** Aba "Notas / Log": alterna entre as notas fiscais e o histórico de sincronização. */
 @Composable
 fun NotasLogScreen(
     notas: List<NotaFiscalEntity>,
